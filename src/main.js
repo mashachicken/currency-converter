@@ -26,12 +26,7 @@ function getElements(response, currency) {
   } else {
     $('.showErrors').text(`There was an error: ${response.message}`);
   }
-
 }
-// async function makeApiCallCurrency() {
-//   const response = await Service.getCurrency();
-//   getElements(response);
-// } 
 
 $('#button').click(function (event) {
   event.preventDefault();
