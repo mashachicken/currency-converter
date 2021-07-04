@@ -1,33 +1,49 @@
 import $ from 'jquery';
 import 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './css/styles.css';
-import CurrencyService from './currency-service.js'
+import CurrencyService from './currency-service.js';
 
 function clearFields() {
   $('#search-currency').val("");
 }
 
-function getElements(response) {
-  if (response.main) {
-    console.log(response)
+function getElements(response, currency) {
+  let currencyInput = $('#currency').val();
+  // const conversion_rates = Object.keys(response['conversion_rates']);
+  if (response) {
+    console.log(response);
+    if (currency === "EUR") {
+      $('.result').text(((currencyInput * `${response['conversion_rates']['EUR']}`).toFixed(2)));
+    } else if (currency === 'GBP') {
+      $('.result').text((currencyInput * `${response['conversion_rates']['GBP']}`).toFixed(2));
+    } else if (currency === "JPY") {
+      $('.result').text((currencyInput * `${response['conversion_rates']['JPY']}`).toFixed(2));
+    } else if (currency ==='CAD') {
+      $('.result').text((currencyInput * `${response['conversion_rates']['CAD']}`).toFixed(2));
+    } else if (currency ==='AUD') {
+      $('.result').text((currencyInput * `${response['conversion_rates']['AUD']}`).toFixed(2));
+    }
   } else {
-    $('.showErrors').text(`There was an error: ${response}`);
+    $('.showErrors').text(`There was an error: ${response.message}`);
   }
-}
 
-async function makeApiCall(city) {
-  const response = await WeatherService.getWeather(city);
-  getElements(response);
-} 
+}
+// async function makeApiCallCurrency() {
+//   const response = await Service.getCurrency();
+//   getElements(response);
+// } 
 
 $('#button').click(function (event) {
   event.preventDefault();
-  let inputCurrency = $('#input-currency').val();
+  let currency = $('#input-currency').val();
   clearFields();
-  let promise = CurrencyService.getCurrency(userSearch);
-  promise.then(function (response) {
-  }, function (error) {
-    $('.showErrors').text(`There was an error processing your request: ${error}`);
-  });
-});
+  CurrencyService.getCurrency(currency)
+    .then(function (response) {
+      console.log('RESPONSE')
+      console.log(currency)
+      getElements(response, currency);
+      // $('').append()
+    }, function (error) {
+      $('.showErrors').text(`There was an error processing your request: ${error}`);
+    });
+})
