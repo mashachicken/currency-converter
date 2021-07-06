@@ -9,18 +9,18 @@ function clearFields() {
 
 function getElements(response, currency) {
   let currencyInput = $('#currency').val();
-  // const conversion_rates = Object.keys(response['conversion_rates']);
   if (response) {
-    console.log(response);
-    if (currency === "EUR") {
-      $('.result').text(((currencyInput * `${response['conversion_rates']['EUR']}`).toFixed(2)));
+    if (!(currency in response.conversion_rates)) {
+      $('.result').text("error not a real currency");
+    } else if (currency === "EUR") {
+      $('.result').text((currencyInput * `${response['conversion_rates']['EUR']}`));
     } else if (currency === 'GBP') {
       $('.result').text((currencyInput * `${response['conversion_rates']['GBP']}`).toFixed(2));
     } else if (currency === "JPY") {
       $('.result').text((currencyInput * `${response['conversion_rates']['JPY']}`).toFixed(2));
-    } else if (currency ==='CAD') {
+    } else if (currency === 'CAD') {
       $('.result').text((currencyInput * `${response['conversion_rates']['CAD']}`).toFixed(2));
-    } else if (currency ==='AUD') {
+    } else if (currency === 'AUD') {
       $('.result').text((currencyInput * `${response['conversion_rates']['AUD']}`).toFixed(2));
     }
   } else {
@@ -28,17 +28,16 @@ function getElements(response, currency) {
   }
 }
 
-$('#button').click(function (event) {
-  event.preventDefault();
-  let currency = $('#input-currency').val();
-  clearFields();
-  CurrencyService.getCurrency(currency)
-    .then(function (response) {
-      console.log('RESPONSE')
-      console.log(currency)
-      getElements(response, currency);
-      // $('').append()
-    }, function (error) {
-      $('.showErrors').text(`There was an error processing your request: ${error}`);
-    });
-})
+$(document).ready(function () {
+  $('#button').click(function (event) {
+    event.preventDefault();
+    let currency = $('#type-currency').val();
+    CurrencyService.getCurrency()
+      .then(function (response) {
+        getElements(response, currency);
+        clearFields();
+      }, function (error) {
+        $('.showErrors').text(`There was an error processing your request: ${error}`);
+      });
+  });
+});
