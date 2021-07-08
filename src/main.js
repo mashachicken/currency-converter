@@ -11,7 +11,7 @@ function getElements(response, currency) {
   let currencyInput = $('#currency').val();
   if (response) {
     if (!(currency in response.conversion_rates)) {
-      $('.result').text("error not a real currency");
+      $('.result').text("not a real currency");
     } else if (currency === "EUR") {
       $('.result').text((currencyInput * `${response['conversion_rates']['EUR']}`));
     } else if (currency === 'GBP') {
